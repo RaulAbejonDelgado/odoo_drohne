@@ -22,4 +22,3 @@
 ##############################################################################
 
 import postgree_connector
-import ipartek_models
