@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data >  
+        <record id="action_postgree_connector" model="ir.actions.act_window">
+             <field name="name">postgree connector view</field>
+             <field name="res_model">postgree.connector</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">tree,form</field>
+             <field name="sequence" eval="0"/>
+         </record>
+         <record id="action_departamento" model="ir.actions.act_window">
+             <field name="name">Departamento view</field>
+             <field name="res_model">departamento</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">tree,form</field>
+             <field name="sequence" eval="0"/>
+         </record>
+         <record id="action_empleado" model="ir.actions.act_window">
+             <field name="name">Empleado view</field>
+             <field name="res_model">empleado</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">tree,form</field>
+             <field name="sequence" eval="0"/>
+         </record>
+
+        <menuitem name="Postgree-connector" id="postgree_connector"
+                  parent="base.menu_custom"
+            sequence="80"/>
+        <menuitem name="Postgree-connection" id="postgree_connector_conexion"
+             action="action_postgree_connector" parent="postgree_connection.postgree_connector"
+            sequence="1"/>
+        <menuitem name="Departamento" id="departamento"
+         action="action_departamento" parent="postgree_connection.postgree_connector"
+        sequence="2"/>
+        <menuitem name="Empleado" id="empleado"
+         action="action_empleado" parent="postgree_connection.postgree_connector"
+        sequence="3"/>
+        
+    </data>
+</openerp>
