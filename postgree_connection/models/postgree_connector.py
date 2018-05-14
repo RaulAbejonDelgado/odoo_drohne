@@ -151,9 +151,9 @@ class postgree_connector(models.Model):
         dict = {}
         list_of_dicts = []
         #cojo el contenido de la tabla elegida
-#         cursor.execute("SELECT * FROM {0}".format(table_name))
-#         tables_values =  cursor.fetchall()
-#         for table_value in tables_values:
-#             for field_key,field_value in zip(list_key,table_value):
-#             list_of_dicts.append(dict) 
-#         return list_of_dicts
+        cursor.execute("SELECT * FROM {0}".format(table_name))
+        tables_values =  cursor.fetchall()
+        for table_value in tables_values:
+            for field_key,field_value in zip(list_key,table_value):
+                list_of_dicts.append(dict) 
+        return list_of_dicts

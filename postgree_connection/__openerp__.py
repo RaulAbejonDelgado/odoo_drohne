@@ -23,15 +23,15 @@
 
 
 {
-    'name': ' Postgree connector',
+    'name': 'Postgree connector',
     'version': '0.1',
     'category': 'Base',
     'license': 'AGPL-3',
     'complexity': 'easy',
-    'description': ("This module let generate accounts and also associated with their partner"),
-    'author': "",
+    'description': ("Migration tool"),
+    'author': "Raul Abejon Delgado, raul.abejon.delgado@gmail.com",
     'website': '',
-    'depends': ['base','ke_account_import'],
+    'depends': ['base'],
     'init_xml': [],
     'demo_xml': [],
     'data': [
