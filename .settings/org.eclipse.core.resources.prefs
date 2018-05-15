@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//postgree_connection/__init__.py=utf-8
 encoding//postgree_connection/__openerp__.py=utf-8
 encoding//postgree_connection/models/__init__.py=utf-8
+encoding//postgree_connection/models/external_id.py=utf-8
 encoding//postgree_connection/models/postgree_connector.py=utf-8

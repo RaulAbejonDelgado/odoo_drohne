@@ -19,34 +19,10 @@ class postgree_connector(models.Model):
     dest_server = fields.Char('host destino')
     dest_db = fields.Char('Base de datos destino')
     dest_user = fields.Char('Usuario de la base de datos destino')
-    dest_table = fields.Char('Modelo destino')
+    inter_table = fields.Many2one('ir.model','Modelo intermedio')
+    dest_table = fields.Many2one('ir.model','Modelo destino')
     connection_result = fields.Boolean('Conexion establecida ?')
     connection_message = fields.Char('Mensaje de servidor')
-    
-#     @api.multi
-#     def UnlinkItems(self):
-# #         self.ensure_one()
-# #         obj_to_delete = self.env['ir.model'].search([('name','=','kernet_'+str(self.source_table_name))])
-# #         if obj_to_delete.field_id:
-# #             for field in obj_to_delete.field_id:
-# #                 field.unlink()
-# #         if obj_to_delete:
-# #             obj_to_delete.unlink()
-#         conn = self.ConnectPostgOrig()
-#         cur = conn.cursor()
-#         cur.execute("DROP TABLE kernet_'{0}".format(table_name))  
-#         conn.commit()
-#         conn.close()
-        
-    @api.multi
-    def UpdateData(self,obj_dict):
-        """Recibe un diccionario con valores proviniente de la tabla destino"""
-        for s in self:
-            obj_id = self.env[s.dest_table].search([('models','=',obj_dict['models'])])
-            if not obj_id:
-                obj_id.create(dict)
-            if obj_id:
-                obj_id.write(dict)
     
     @api.multi
     def ConnectPostgOrig(self):
@@ -64,13 +40,53 @@ class postgree_connector(models.Model):
             #llamo al metodo que me devuelve la estructura de la tabla seleccionada,pasandole conn, para que haga consulta sql en la bd/tabla origen
             #list_key = lista con los nombres de los campos de la tabla
             list_key = s.GetStructure(conn)
-            model = s.GetModel(s.source_table_name,list_key)
+            #model = s.GetModel(s.source_table_name,list_key)
             lists_values = s.GetData(conn,s.source_table_name,list_key)
+            #s.UpdateCreate(lists_values)
 
                     
 #             for partner_listn in list_value:
 #                 for partner_data in partner_listn:
 #                     dict[partner_value] = partner_value
+
+    @api.multi
+    def UpdateCreate(self,rec_data):
+        print rec_data['name'], rec_data
+        rec_data = self.checkConflictFlieds(rec_data)
+        obj = self.env[self.dest_table.model].search([('external_id','=',rec_data['external_id'])])
+        if obj: 
+            obj.write(rec_data)
+        else:
+            obj.create(rec_data)
+    
+    @api.multi
+    def checkConflictFlieds(self,dic):
+        if 'commercial_partner_id' in dic:
+            dic['commercial_partner_id'] = None
+        if 'image' in dic:
+            dic['image'] = None
+        if 'image_medium' in dic:
+            dic['image_medium'] = None
+        if 'image_small' in dic:
+            dic['image_small'] = None
+        if 'notify_email' in dic:
+            dic['notify_email'] = 'none'
+        if 'opt_output' in dic:
+            dic['notify_email'] = False
+        if 'email' in dic:
+            dic['email'] = 'raul.abejon.delgado@gmail.com'
+
+        
+        return dic
+    
+    @api.multi
+    def checkFielName(self,field_id):
+        """Detectamos posibles nombres de columnas que pueden entrar en conflicto"""
+        if not field_id:
+            return False
+        if field_id.name == 'uos_coeff' or field_id.name == 'active':
+            return False
+        
     @api.multi
     def UpdateFieldsOnModel(self,list_key,res):
         for s in self:
@@ -84,27 +100,31 @@ class postgree_connector(models.Model):
                         'model_id':res.id,
                         'modules':'postgree_connection',
                         }        
-                if field_id and field_id.name != 'uos_coeff' or field_id.name != 'active':
+                #if field_id and field_id.name != 'uos_coeff' or field_id.name != 'active':
+                if s.checkFielName(field_id):
                     print field_id.name
                     field_id.write(fields_vals)
                 if not field_id:
                     field_id.create(fields_vals)
-                
+    
 
+    
     @api.multi
     def GetModel(self,table,list_key):
         for s in self:
-            #table_convert = 'kernet_'+str(table)
-            model_obj = s.env['ir.model'].search([('model','=','kernet.'+str(table))])
+            #table_convert = 'drohne_'+str(table)
+            table_fix ='drohne.'+ table.replace('_','.')
+            model_obj = s.env['ir.model'].search([('model','=',str(table_fix))])
             model_vals = {
-                'name':'kernet_'+str(table),
-                'model':'kernet.'+str(table),
+                'name':str(table_fix),
+                'model':str(table_fix),
                 'state':'base',
                 'osv_memory':False,
                 }
             if not model_obj:
                 res = model_obj.create(model_vals)
                 s.UpdateFieldsOnModel(list_key,res)
+                s.inter_table = res.id
                 return res
             if model_obj:
                 model_obj.write(model_vals)
@@ -148,12 +168,40 @@ class postgree_connector(models.Model):
         list_key: Lista con las claves, para la creacion del diccionario
         Devuelve list_of_dicts = una lista con diccionarios, cada diccionario tiene la clave:valor de la tabla original """
         cursor = conn.cursor()
-        dict = {}
+        rec_data = {}
         list_of_dicts = []
         #cojo el contenido de la tabla elegida
         cursor.execute("SELECT * FROM {0}".format(table_name))
         tables_values =  cursor.fetchall()
         for table_value in tables_values:
             for field_key,field_value in zip(list_key,table_value):
-                list_of_dicts.append(dict) 
+                if str(field_key[0]) == 'id':
+                    rec_data[str('external_id')] = field_value
+                    continue
+                rec_data[str(field_key[0])] = field_value
+            print rec_data
+            if rec_data['name'] == 'Template User':
+                continue
+            self.UpdateCreate(rec_data)
+            list_of_dicts.append(rec_data)
         return list_of_dicts
+    
+    @api.multi
+    def to_new_records(self):
+        self.ensure_one()
+        po_obj = self.env[self.inter_table.name].search([])
+        po_ids = []
+        for obj in po_obj:
+            po_ids.append(obj.id)
+        return {
+            'view_type': 'form',
+            'view_mode': 'tree,form,graph,calendar',
+            'res_model': self.dest_table,
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', po_ids)],
+            }
+
+    
+
+    

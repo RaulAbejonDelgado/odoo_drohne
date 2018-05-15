@@ -8,9 +8,7 @@
              <field name="view_mode">tree,form</field>
              <field name="sequence" eval="0"/>
          </record>
-
-
-
+         
         <menuitem name="Postgree-connector" id="postgree_connector"
                   parent="base.menu_custom"
             sequence="80"/>

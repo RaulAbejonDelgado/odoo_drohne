@@ -15,6 +15,15 @@
                 </head>
                 <form>
                     <sheet>
+                        <button type="object"
+                            name="to_new_records"
+                            string=""
+                            class="oe_stat_button"
+                            icon="fa-book">
+                            <!--<field string="Registros"
+                                    name="reg_count"
+                                    widget="statinfo"/>-->
+                    </button>
                         <group>
                             <group>
                                  <field name="name"/>
@@ -27,6 +36,7 @@
                                  <field name="source_table_name"/>
                             </group>
                             <group>
+                                <field name="inter_table"/>
                                 <field name="dest_server"/>
                                 <field name="dest_db"/>
                                 <field name="dest_user"/>

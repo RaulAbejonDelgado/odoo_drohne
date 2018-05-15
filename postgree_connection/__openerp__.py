@@ -29,7 +29,11 @@
     'license': 'AGPL-3',
     'complexity': 'easy',
     'description': ("Migration tool"),
-    'author': "Raul Abejon Delgado, raul.abejon.delgado@gmail.com",
+    'author': "Raul Abejon Delgado",
+    'contributors': [
+        'Raul Abejon Delgado <raul.abejon.delgado@gmail.com>',
+    ],
+    'summary': 'Migration tool',
     'website': '',
     'depends': ['base'],
     'init_xml': [],
