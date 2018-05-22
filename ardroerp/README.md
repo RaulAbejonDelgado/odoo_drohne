@@ -1,4 +1,5 @@
 # Ardroerp
-   Fuente -> http://www.itopen.it
+   Fuente -> http://www.itopen.it/controlling-arduino-from-openerp/
+   
 #Repositorio Original
-   http://www.itopen.it/controlling-arduino-from-openerp/
+    https://github.com/elpaso/arduinocontroller
