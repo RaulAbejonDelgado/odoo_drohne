@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!--Extended Data-->
+         <record id="postgree_connector_form_view" model="ir.ui.view">
+             <field name="name">postgree connector view</field>
+             <field name="model">postgree.connector</field>
+             <field name="type">form</field>
+             <field name="arch" type="xml">
+                <head>
+                    <button name="ConnectionMessage" type="object" string="ComprobarConexion"/>
+                    <button name="Conecction" type="object" string="Connectar"/>
+                    <button name="UnlinkItems" type="object" string="Borrar"/>
+
+                </head>
+                <form>
+                    <sheet>
+                        <button type="object"
+                            name="to_new_records"
+                            string=""
+                            class="oe_stat_button"
+                            icon="fa-book">
+                            <!--<field string="Registros"
+                                    name="reg_count"
+                                    widget="statinfo"/>-->
+                    </button>
+                        <group>
+                            <group>
+                                 <field name="name"/>
+                                 <field name="source_server"/>
+                                 <field name="source_db"/>
+                                 <field name="source_user"/>
+                                 <field name="source_pass"/>
+                                 <field name="connection_result"/>
+                                 <field name="connection_message"/>
+                                 <field name="source_table_name"/>
+                            </group>
+                            <group>
+                                <field name="inter_table"/>
+                                <field name="dest_server"/>
+                                <field name="dest_db"/>
+                                <field name="dest_user"/>
+                                <field name="dest_table"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+             </field>
+         </record>
+    </data>
+</openerp>
